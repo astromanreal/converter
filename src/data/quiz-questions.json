@@ -1,0 +1,129 @@
+
+[
+  {
+    "id": "q1",
+    "category": "Length",
+    "question": "How many centimeters are in a meter?",
+    "options": ["10", "100", "1000", "0.1"],
+    "answer": "100",
+    "difficulty": "Easy",
+    "explanation": "The prefix 'centi' means 1/100th, so there are 100 centimeters in 1 meter."
+  },
+  {
+    "id": "q2",
+    "category": "Weight",
+    "question": "Approximately how many pounds (lbs) are in 1 kilogram (kg)?",
+    "options": ["1.1", "2.2", "0.45", "5"],
+    "answer": "2.2",
+    "difficulty": "Easy",
+    "explanation": "1 kilogram is approximately equal to 2.20462 pounds."
+  },
+  {
+    "id": "q3",
+    "category": "Temperature",
+    "question": "What is the boiling point of water in Celsius (°C) at standard pressure?",
+    "options": ["0°C", "100°C", "212°C", "32°C"],
+    "answer": "100°C",
+    "difficulty": "Easy",
+    "explanation": "Water boils at 100 degrees Celsius (or 212 degrees Fahrenheit) at standard atmospheric pressure."
+  },
+  {
+    "id": "q4",
+    "category": "Time",
+    "question": "How many seconds are in an hour?",
+    "options": ["60", "360", "3600", "86400"],
+    "answer": "3600",
+    "difficulty": "Medium",
+    "explanation": "There are 60 seconds in a minute and 60 minutes in an hour, so 60 * 60 = 3600 seconds."
+  },
+  {
+    "id": "q5",
+    "category": "Currency",
+    "question": "If 1 USD = 0.9 EUR, how many USD are equal to 90 EUR?",
+    "options": ["81 USD", "90 USD", "100 USD", "99 USD"],
+    "answer": "100 USD",
+    "difficulty": "Medium",
+    "explanation": "If 1 USD = 0.9 EUR, then 1 EUR = 1 / 0.9 USD. So, 90 EUR = 90 * (1 / 0.9) USD = 90 / 0.9 USD = 100 USD."
+  },
+  {
+    "id": "q6",
+    "category": "Area",
+    "question": "How many square meters (m²) are in a hectare (ha)?",
+    "options": ["100", "1,000", "10,000", "1,000,000"],
+    "answer": "10,000",
+    "difficulty": "Medium",
+    "explanation": "A hectare is a unit of area equal to 10,000 square meters."
+  },
+   {
+    "id": "q7",
+    "category": "Chemistry",
+    "question": "What is the approximate molar mass of water (H₂O)? (H=1.008, O=15.999)",
+    "options": ["16.01 g/mol", "17.01 g/mol", "18.02 g/mol", "2.02 g/mol"],
+    "answer": "18.02 g/mol",
+    "difficulty": "Medium",
+    "explanation": "Molar mass of H₂O = 2 * (Atomic mass of H) + (Atomic mass of O) ≈ 2 * 1.008 + 15.999 = 2.016 + 15.999 ≈ 18.015 g/mol."
+  },
+  {
+    "id": "q8",
+    "category": "Data Storage",
+    "question": "How many bytes are in a Kibibyte (KiB)?",
+    "options": ["1000", "1024", "2048", "8"],
+    "answer": "1024",
+    "difficulty": "Easy",
+    "explanation": "Binary prefixes use powers of 2. 'Kibi' (Ki) means 2^10, which is 1024."
+  },
+   {
+    "id": "q9",
+    "category": "Electrical",
+    "question": "According to Ohm's Law, if Voltage (V) is 12V and Resistance (R) is 4Ω, what is the Current (I)?",
+    "options": ["3 A", "48 A", "0.33 A", "16 A"],
+    "answer": "3 A",
+    "difficulty": "Medium",
+    "explanation": "Ohm's Law states V = I * R. Therefore, Current (I) = Voltage (V) / Resistance (R) = 12V / 4Ω = 3 Amperes (A)."
+  },
+   {
+    "id": "q10",
+    "category": "Length",
+    "question": "How many feet are in a mile?",
+    "options": ["1760", "5280", "1000", "3"],
+    "answer": "5280",
+    "difficulty": "Medium",
+    "explanation": "There are 5,280 feet in one standard mile."
+  },
+  {
+    "id": "q11",
+    "category": "Temperature",
+    "question": "Convert 50°F to Celsius.",
+    "options": ["10°C", "15°C", "20°C", "5°C"],
+    "answer": "10°C",
+    "difficulty": "Hard",
+    "explanation": "The formula is °C = (°F - 32) * 5/9. So, (50 - 32) * 5/9 = 18 * 5/9 = 10°C."
+  },
+  {
+    "id": "q12",
+    "category": "Speed",
+    "question": "A car travels at 60 mph. What is its speed in km/h? (1 mile ≈ 1.609 km)",
+    "options": ["37.3 km/h", "96.5 km/h", "100 km/h", "60 km/h"],
+    "answer": "96.5 km/h",
+    "difficulty": "Hard",
+    "explanation": "Speed in km/h = Speed in mph * 1.609. So, 60 * 1.609 ≈ 96.54 km/h."
+  },
+    {
+    "id": "q13",
+    "category": "Volume",
+    "question": "How many milliliters (mL) are in 1 US fluid ounce (fl oz)?",
+    "options": ["29.57 mL", "30 mL", "25 mL", "33.81 mL"],
+    "answer": "29.57 mL",
+    "difficulty": "Hard",
+    "explanation": "1 US fluid ounce is approximately equal to 29.5735 milliliters."
+  },
+  {
+    "id": "q14",
+    "category": "Chemistry",
+    "question": "If a solution has a pOH of 9, what is its pH?",
+    "options": ["5", "7", "9", "14"],
+    "answer": "5",
+    "difficulty": "Hard",
+    "explanation": "At standard temperature (25°C), pH + pOH = 14. So, pH = 14 - pOH = 14 - 9 = 5."
+  }
+]
