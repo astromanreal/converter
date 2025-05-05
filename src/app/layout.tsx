@@ -113,6 +113,7 @@ export default function RootLayout({
           </ThemeCustomizerProvider>
         </ThemeProvider>
       </body>
+      <meta name="google-site-verification" content="mac7aLjz9hgBPOeatEJp8fZ6RL2GRi8PeWQfgcITzFU" />
       <meta name="google-adsense-account" content="ca-pub-2658549797831211"></meta>
     </html>
   );
