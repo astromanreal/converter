@@ -20,8 +20,14 @@ export const metadata: Metadata = {
   description: siteDescription,
   metadataBase: new URL(siteUrl), // Required for resolving relative Open Graph image URLs
   applicationName: siteName,
-  keywords: ['converter', 'unit converter', 'currency converter', 'ai converter', 'distance', 'weight', 'temperature', 'online tool', 'calculator', 'measurement', 'conversion', 'units', 'metric', 'imperial'],
-  authors: [{ name: 'Sarthak', url: 'https://x.com/Sathyamsarthak' }], // Optional: Add author info
+  keywords: [
+    'converter', 'unit converter', 'currency converter', 'distance converter',
+    'weight converter', 'temperature converter', 'volume converter', 'area converter',
+    'data storage converter', 'energy converter', 'power converter', 'pressure converter',
+    'speed converter', 'time converter', 'molar mass calculator', 'ohms law calculator',
+    'pH calculator', 'online tool', 'calculator', 'measurement', 'conversion', 'units',
+    'metric', 'imperial', 'science calculator', 'chemistry calculator', 'electrical calculator'
+  ],  authors: [{ name: 'Sarthak', url: 'https://x.com/Sathyamsarthak' }], // Optional: Add author info
   creator: 'Sarthak', // Optional
   publisher: 'Sarthak', // Optional
   // Open Graph Metadata (for social sharing previews)
