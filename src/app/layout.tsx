@@ -91,6 +91,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+       <head>
+      <meta name="google-site-verification" content="mac7aLjz9hgBPOeatEJp8fZ6RL2GRi8PeWQfgcITzFU" />
+      <meta name="google-adsense-account" content="ca-pub-2658549797831211"></meta>
+        {/* Google Analytics Tag */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-4S3KPHQ5YL"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-4S3KPHQ5YL');
+            `,
+          }}
+        />
+      </head>
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
@@ -113,8 +132,6 @@ export default function RootLayout({
           </ThemeCustomizerProvider>
         </ThemeProvider>
       </body>
-      <meta name="google-site-verification" content="mac7aLjz9hgBPOeatEJp8fZ6RL2GRi8PeWQfgcITzFU" />
-      <meta name="google-adsense-account" content="ca-pub-2658549797831211"></meta>
     </html>
   );
 }
