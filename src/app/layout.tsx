@@ -107,6 +107,7 @@ export default function RootLayout({
           </ThemeCustomizerProvider>
         </ThemeProvider>
       </body>
+      <meta name="google-adsense-account" content="ca-pub-2658549797831211"></meta>
     </html>
   );
 }
