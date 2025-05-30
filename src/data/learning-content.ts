@@ -165,4 +165,18 @@ export const learningContent: LearningModule[] = [
         fun_fact: "The 'p' in pH stands for 'potential' or 'power' (from the German 'Potenz') of Hydrogen.",
         visual: "ph_scale_colors.png",
     },
+  // --- Fuel Economy ---
+  {
+    category: "Fuel Economy",
+    title: "Understanding Fuel Economy",
+    description: "Fuel economy measures how efficiently a vehicle uses fuel. Common units include Miles per Gallon (MPG) and Liters per 100 kilometers (L/100km).",
+    key_units: ["Miles per Gallon (US - MPG)", "Miles per Gallon (UK - MPG)", "Liters per 100 kilometers (L/100km)", "Kilometers per Liter (km/L)"],
+    conversion_examples: [
+      { from: "25 MPG (US)", to: "≈ 9.4 L/100km" },
+      { from: "8 L/100km", to: "≈ 12.5 km/L" },
+      { from: "10 km/L", to: "≈ 23.5 MPG (US)" },
+    ],
+    fun_fact: "Lower L/100km values and higher MPG or km/L values indicate better fuel efficiency. They are inversely related!",
+    visual: "fuel_gauge.png",
+  },
 ];

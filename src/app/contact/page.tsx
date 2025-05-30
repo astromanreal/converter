@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Mail, Phone, Twitter } from 'lucide-react';
 import Link from 'next/link';
 
-// Inline SVG for Instagram as it's not in Lucide
 const InstagramIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -25,11 +24,28 @@ const InstagramIcon = () => (
     </svg>
   );
 
+const pageTitle = 'Contact Us - SmartConvert Support';
+const pageDescription = 'Get in touch with the SmartConvert team. Find our contact details including social media links (Twitter, Instagram), phone number, and email address for support or inquiries.';
+const canonicalUrl = '/contact';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
+
 export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with SmartConvert. Find our contact details including social media, phone, and email.',
-   alternates: {
-    canonical: '/contact', // Add canonical URL
+  title: pageTitle,
+  description: pageDescription,
+  keywords: ['contact SmartConvert', 'SmartConvert support', 'customer service', 'feedback', 'help', 'technical support'],
+  alternates: {
+    canonical: canonicalUrl,
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    url: `${siteUrl}${canonicalUrl}`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle,
+    description: pageDescription,
   },
 };
 

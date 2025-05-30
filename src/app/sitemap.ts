@@ -5,7 +5,8 @@ import type { MetadataRoute } from 'next';
 const converterTypes = [
   'currency', 'distance', 'weight', 'temperature', 'time',
   'volume', 'speed', 'area', 'data-storage', 'energy',
-  'pressure', 'power', 'molar-mass', 'ph-calculator', 'ohms-law' // Added new types
+  'pressure', 'power', 'fuel-economy', // Added fuel-economy
+  'molar-mass', 'ph-calculator', 'ohms-law'
 ];
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002'; // Use your actual production URL
@@ -65,4 +66,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...converterPages,
   ];
 }
-

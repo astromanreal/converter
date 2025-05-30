@@ -125,5 +125,14 @@
     "answer": "5",
     "difficulty": "Hard",
     "explanation": "At standard temperature (25°C), pH + pOH = 14. So, pH = 14 - pOH = 14 - 9 = 5."
+  },
+  {
+    "id": "q15",
+    "category": "Fuel Economy",
+    "question": "If a car's fuel economy is 10 km/L, what is its approximate consumption in L/100km?",
+    "options": ["5 L/100km", "10 L/100km", "15 L/100km", "20 L/100km"],
+    "answer": "10 L/100km",
+    "difficulty": "Medium",
+    "explanation": "L/100km = 100 / (km/L). So, 100 / 10 = 10 L/100km."
   }
 ]

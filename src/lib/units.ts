@@ -1,3 +1,4 @@
+
 // src/lib/units.ts
 
 export interface Unit {
@@ -126,4 +127,11 @@ export interface Unit {
     { value: 'hp_e', label: 'Mechanical Horsepower (hp(I))' },
     { value: 'Btu/h', label: 'BTU per hour (BTU/h)' },
     { value: 'ftlb/s', label: 'Foot-pound per second (ft⋅lb/s)' },
+  ];
+
+  export const fuelEconomyUnits: Unit[] = [
+    { value: 'mpg_us', label: 'Miles per Gallon (US MPG)' },
+    { value: 'mpg_uk', label: 'Miles per Gallon (UK MPG)' },
+    { value: 'l_100km', label: 'Liters per 100km (L/100km)' },
+    { value: 'km_l', label: 'Kilometers per Liter (km/L)' },
   ];

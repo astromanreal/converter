@@ -6,14 +6,20 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+const pageTitle = 'Conversion History | SmartConvert';
+const pageDescription = 'View your recent conversion history on SmartConvert. Your history is stored locally in your browser for quick access to past calculations.';
+const canonicalUrl = '/history';
+
 export const metadata: Metadata = {
-  title: 'Conversion History',
-  description: 'View your recent conversion history stored locally in your browser.',
+  title: pageTitle,
+  description: pageDescription,
    alternates: {
-    canonical: '/history', // Add canonical URL
+    canonical: canonicalUrl,
   },
-  robots: { // Prevent indexing of personal history page
-    index: false,
+  // No need for extensive keywords as it's a personal history page
+  keywords: ['conversion history', 'my conversions', 'past calculations', 'SmartConvert history'],
+  robots: {
+    index: false, // Good: Prevents indexing of personal history
     follow: false,
   }
 };

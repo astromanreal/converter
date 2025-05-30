@@ -11,10 +11,16 @@ export interface QuizQuestion {
   explanation?: string; // Optional explanation for the answer
 }
 
+export interface AttemptedQuestion {
+  question: QuizQuestion;
+  userAnswer: string;
+  isCorrect: boolean;
+}
+
 export interface QuizResults {
     score: number;
     totalQuestions: number;
     correctAnswers: number;
     incorrectAnswers: number;
-    // Could add time taken, accuracy percentage, etc. later
+    questionsAttempted: AttemptedQuestion[]; // Added for review
 }

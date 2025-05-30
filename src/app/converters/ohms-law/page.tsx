@@ -7,11 +7,32 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { OhmsLawCalculator } from '@/components/converters/electrical/ohms-law-calculator';
 
+const pageTitle = "Ohm's Law Calculator - V, I, R Online Tool";
+const pageDescription = "Use SmartConvert's Ohm's Law Calculator to find Voltage (V), Current (I), or Resistance (R) when two values are known. V=IR calculator for electrical engineering and physics.";
+const canonicalUrl = '/converters/ohms-law';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
+
 export const metadata: Metadata = {
-  title: 'Ohm\'s Law Calculator',
-  description: 'Calculate Voltage (V), Current (I), or Resistance (R) using Ohm\'s Law (V=IR).',
+  title: pageTitle,
+  description: pageDescription,
+  keywords: [
+    "ohm's law calculator", 'voltage calculator', 'current calculator', 'resistance calculator',
+    'V=IR calculator', 'electrical calculator', 'physics calculator', 'circuit analysis',
+    'amps volts ohms', 'SmartConvert', 'online electrical tool'
+  ],
   alternates: {
-    canonical: '/converters/ohms-law',
+    canonical: canonicalUrl,
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    url: `${siteUrl}${canonicalUrl}`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle,
+    description: pageDescription,
   },
 };
 
@@ -30,8 +51,6 @@ export default function OhmsLawPage() {
         </CardHeader>
         <CardContent>
           <OhmsLawCalculator />
-
-          {/* Ad Placeholder Section */}
           <Separator className="my-8" />
           <div className="mt-8 p-4 border border-dashed rounded-lg text-center text-muted-foreground bg-muted/20">
             <p className="text-sm">Advertisement Placeholder</p>

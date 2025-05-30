@@ -7,11 +7,32 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { PHCalculator } from '@/components/converters/chemistry/ph-calculator';
 
+const pageTitle = 'pH Calculator - Acidity & Alkalinity Tool';
+const pageDescription = "Calculate pH, pOH, Hydrogen ion [H+], or Hydroxide ion [OH-] concentration with SmartConvert's pH calculator. Useful for chemistry, biology, and environmental science.";
+const canonicalUrl = '/converters/ph-calculator';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
+
 export const metadata: Metadata = {
-  title: 'pH Calculator',
-  description: 'Calculate pH, pOH, [H+], or [OH-] based on the known value.',
+  title: pageTitle,
+  description: pageDescription,
+  keywords: [
+    'pH calculator', 'pOH calculator', 'hydrogen ion concentration', 'hydroxide ion concentration',
+    '[H+] calculator', '[OH-] calculator', 'acidity calculator', 'alkalinity calculator',
+    'chemistry tool', 'solution pH', 'SmartConvert', 'online pH tool'
+  ],
   alternates: {
-    canonical: '/converters/ph-calculator',
+    canonical: canonicalUrl,
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    url: `${siteUrl}${canonicalUrl}`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle,
+    description: pageDescription,
   },
 };
 
@@ -30,8 +51,6 @@ export default function PHCalculatorPage() {
         </CardHeader>
         <CardContent>
           <PHCalculator />
-
-          {/* Ad Placeholder Section */}
           <Separator className="my-8" />
           <div className="mt-8 p-4 border border-dashed rounded-lg text-center text-muted-foreground bg-muted/20">
             <p className="text-sm">Advertisement Placeholder</p>

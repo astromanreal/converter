@@ -1,46 +1,54 @@
 
-'use client'; // This page manages interactive quiz state
+'use client';
 
 import React, { useState, useEffect } from 'react';
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next'; // Metadata for client components is tricky. Define in layout or make page server component.
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, BrainCircuit } from 'lucide-react'; // Using BrainCircuit for Quiz icon
+import { ArrowLeft, BrainCircuit } from 'lucide-react';
 import { QuizCard } from '@/components/quiz/quiz-card';
 import { QuizResultsCard } from '@/components/quiz/quiz-results';
 import { useQuiz } from '@/hooks/use-quiz';
 import type { QuizQuestion, QuizDifficulty } from '@/lib/quiz-types';
-import quizQuestionsData from '@/data/quiz-questions.json'; // Import the questions
+import quizQuestionsData from '@/data/quiz-questions.json';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton'; // For loading state
+import { Skeleton } from '@/components/ui/skeleton';
 
-
-// Metadata can remain static for the main quiz page route
+// It's better to handle metadata for client components in a parent server component (e.g., layout)
+// or by converting this page to a server component if possible.
+// For dynamic titles based on quiz state, it would require more advanced setup.
+// Static metadata for the quiz landing:
 // export const metadata: Metadata = {
-//   title: 'Conversion Quiz Challenge',
-//   description: 'Test your knowledge of unit conversions with our interactive quiz!',
+//   title: 'Conversion Quiz Challenge - Test Your Unit Knowledge | SmartConvert',
+//   description: 'Take the SmartConvert Conversion Quiz Challenge! Test your knowledge of unit conversions across various categories like length, weight, temperature, currency, and scientific units. Multiple difficulty levels available.',
+//   keywords: ['conversion quiz', 'unit quiz', 'measurement challenge', 'test knowledge', 'online quiz', 'SmartConvert quiz', 'math quiz', 'science quiz'],
 //   alternates: {
 //     canonical: '/quiz',
 //   },
+//   openGraph: {
+//     title: 'Conversion Quiz Challenge | SmartConvert',
+//     description: 'Test your unit conversion skills with fun and challenging quizzes.',
+//     url: '/quiz', // Will be resolved by metadataBase
+//     type: 'website',
+//   },
+//   twitter: {
+//     card: 'summary_large_image',
+//     title: 'Conversion Quiz Challenge | SmartConvert',
+//     description: 'Ready to test your conversion knowledge? Take the SmartConvert quiz!',
+//   },
 // };
-// Note: Since this is a Client Component due to state management,
-// metadata should ideally be handled in a parent Layout or Page Server Component if needed.
-// For simplicity here, we'll omit dynamic metadata generation based on quiz state.
 
 export default function QuizPage() {
   const [isMounted, setIsMounted] = useState(false);
-  const [difficulty, setDifficulty] = useState<QuizDifficulty | undefined>(undefined); // Start with all questions
-  const [isLoading, setIsLoading] = useState(true); // Control loading state
-
-  // Load questions (ensure this runs client-side)
+  const [difficulty, setDifficulty] = useState<QuizDifficulty | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
   const [allQuestions, setAllQuestions] = useState<QuizQuestion[]>([]);
 
   useEffect(() => {
-      // Simulate loading if needed, or directly set questions if static import is fast
       setIsLoading(true);
-      setAllQuestions(quizQuestionsData as QuizQuestion[]); // Cast if needed
+      setAllQuestions(quizQuestionsData as QuizQuestion[]);
       setIsLoading(false);
       setIsMounted(true);
   }, []);
@@ -58,7 +66,7 @@ export default function QuizPage() {
     userAnswer,
     isCorrect,
     feedbackMessage,
-    selectedOption, // Get selectedOption from hook
+    selectedOption,
   } = useQuiz({ questions: allQuestions, difficulty });
 
   const handleDifficultyChange = (value: string) => {
@@ -67,24 +75,20 @@ export default function QuizPage() {
       } else {
           setDifficulty(value as QuizDifficulty);
       }
-      // useQuiz hook useEffect will handle restarting/refiltering
   };
 
-    // Calculate progress percentage
     const progress = totalQuestions > 0 ? ((currentQuestionIndex + (isQuizComplete ? 1 : 0)) / totalQuestions) * 100 : 0;
 
-
    if (!isMounted || isLoading) {
-    // Show skeleton loaders while mounting or loading questions
     return (
       <div className="container mx-auto px-4 py-8 space-y-6">
-         <Skeleton className="h-10 w-32" /> {/* Back button */}
+         <Skeleton className="h-10 w-32" />
         <div className="flex justify-between items-center">
-            <Skeleton className="h-8 w-48" /> {/* Title */}
-            <Skeleton className="h-10 w-40" /> {/* Difficulty Selector */}
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-10 w-40" />
         </div>
-         <Skeleton className="h-8 w-full" /> {/* Progress Bar */}
-          <Skeleton className="h-[400px] w-full max-w-xl mx-auto" /> {/* Quiz Card Skeleton */}
+         <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-[400px] w-full max-w-xl mx-auto" />
       </div>
     );
   }
@@ -106,7 +110,7 @@ export default function QuizPage() {
                 <Select
                     value={difficulty ?? 'all'}
                     onValueChange={handleDifficultyChange}
-                    disabled={isQuizComplete || currentQuestionIndex > 0} // Disable after starting
+                    disabled={isQuizComplete || (currentQuestionIndex > 0 && totalQuestions > 0)}
                 >
                     <SelectTrigger id="difficulty-select" className="w-[150px]">
                     <SelectValue placeholder="Select Difficulty" />
@@ -121,7 +125,6 @@ export default function QuizPage() {
             </div>
         </div>
 
-
       {!isQuizComplete && currentQuestion && totalQuestions > 0 && (
            <div className="mb-6 space-y-2">
              <Progress value={progress} className="w-full" aria-label="Quiz progress" />
@@ -131,12 +134,11 @@ export default function QuizPage() {
            </div>
       )}
 
-
       {isQuizComplete ? (
         <QuizResultsCard results={getResults()} onRestart={restartQuiz} />
       ) : currentQuestion ? (
         <QuizCard
-          key={currentQuestion.id} // Add key for re-rendering on question change
+          key={currentQuestion.id}
           question={currentQuestion}
           questionNumber={currentQuestionIndex + 1}
           totalQuestions={totalQuestions}
@@ -145,24 +147,18 @@ export default function QuizPage() {
           feedbackMessage={feedbackMessage}
           isCorrect={isCorrect}
           userAnswer={userAnswer}
-          initialSelectedOption={selectedOption} // Pass selected option state
+          initialSelectedOption={selectedOption}
         />
        ) : (
            <div className="text-center text-muted-foreground py-10">
              {allQuestions.length > 0 ? "Select a difficulty to start the quiz." : "Loading questions..."}
-             {/* Add a button to explicitly start if needed */}
-             {/* <Button onClick={restartQuiz} disabled={!difficulty}>Start Quiz</Button> */}
            </div>
        )}
 
-        {/* Ad Placeholder Section */}
-        {/* <Separator className="my-8" /> */}
          <div className="mt-12 p-4 border border-dashed rounded-lg text-center text-muted-foreground bg-muted/20 max-w-4xl mx-auto">
              <p className="text-sm font-medium">Advertisement Placeholder</p>
              <p className="text-xs mt-1">Relevant ad content could be displayed here.</p>
          </div>
-
     </div>
   );
 }
-

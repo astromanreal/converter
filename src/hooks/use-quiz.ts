@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { QuizQuestion, QuizResults, QuizDifficulty } from '@/lib/quiz-types';
+import type { QuizQuestion, QuizResults, QuizDifficulty, AttemptedQuestion } from '@/lib/quiz-types';
 
 interface UseQuizOptions {
   questions: QuizQuestion[];
@@ -23,6 +23,7 @@ interface UseQuizReturn {
   isCorrect: boolean | null;
   feedbackMessage: string | null;
   selectedOption: string | null; // Track which option the user selected
+  // questionsAttempted is not directly returned, but included in getResults()
 }
 
 export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizReturn {
@@ -30,20 +31,20 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
-  const [userAnswer, setUserAnswer] = useState<string | null>(null); // Track the submitted answer
-  const [selectedOption, setSelectedOption] = useState<string | null>(null); // Track the selected radio button
+  const [userAnswer, setUserAnswer] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [questionsAttempted, setQuestionsAttempted] = useState<AttemptedQuestion[]>([]);
 
-  // Filter and shuffle questions on initial load or when difficulty changes
   useEffect(() => {
     let availableQuestions = questions;
     if (difficulty) {
       availableQuestions = questions.filter(q => q.difficulty === difficulty);
     }
-    // Simple shuffle (Fisher-Yates algorithm)
     const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
     setFilteredQuestions(shuffled);
+    // Reset state when questions/difficulty change
     setCurrentQuestionIndex(0);
     setScore(0);
     setIsQuizComplete(false);
@@ -51,16 +52,17 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
     setSelectedOption(null);
     setIsCorrect(null);
     setFeedbackMessage(null);
-  }, [questions, difficulty]); // Depend on questions and difficulty
+    setQuestionsAttempted([]);
+  }, [questions, difficulty]);
 
   const currentQuestion = filteredQuestions[currentQuestionIndex] || null;
   const totalQuestions = filteredQuestions.length;
 
   const submitAnswer = useCallback((selected: string) => {
-    if (userAnswer !== null || !currentQuestion) return; // Prevent submitting multiple times or if no question
+    if (userAnswer !== null || !currentQuestion) return;
 
     setUserAnswer(selected);
-    setSelectedOption(selected); // Keep track of the selected option visually
+    setSelectedOption(selected);
     const correctAnswer = currentQuestion.answer;
     const correct = selected === correctAnswer;
 
@@ -71,10 +73,17 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
     } else {
       setFeedbackMessage(`Incorrect. The correct answer is: ${correctAnswer}. ${currentQuestion.explanation || ''}`);
     }
+
+    const attempt: AttemptedQuestion = {
+      question: currentQuestion,
+      userAnswer: selected,
+      isCorrect: correct,
+    };
+    setQuestionsAttempted((prev) => [...prev, attempt]);
+
   }, [currentQuestion, userAnswer]);
 
   const nextQuestion = useCallback(() => {
-    // Reset feedback for the next question
     setUserAnswer(null);
     setSelectedOption(null);
     setIsCorrect(null);
@@ -88,7 +97,6 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
   }, [currentQuestionIndex, totalQuestions]);
 
   const restartQuiz = useCallback(() => {
-    // Re-shuffle questions for a new attempt
     const shuffled = [...filteredQuestions].sort(() => Math.random() - 0.5);
     setFilteredQuestions(shuffled);
     setCurrentQuestionIndex(0);
@@ -98,7 +106,8 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
     setSelectedOption(null);
     setIsCorrect(null);
     setFeedbackMessage(null);
-  }, [filteredQuestions]); // Depend on filteredQuestions to reshuffle them
+    setQuestionsAttempted([]); // Clear attempted questions on restart
+  }, [filteredQuestions]);
 
   const getResults = useCallback((): QuizResults => {
     return {
@@ -106,8 +115,9 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
       totalQuestions: totalQuestions,
       correctAnswers: score,
       incorrectAnswers: totalQuestions - score,
+      questionsAttempted: questionsAttempted, // Include attempted questions in results
     };
-  }, [score, totalQuestions]);
+  }, [score, totalQuestions, questionsAttempted]);
 
   return {
     currentQuestion,
@@ -119,9 +129,9 @@ export function useQuiz({ questions, difficulty }: UseQuizOptions): UseQuizRetur
     nextQuestion,
     restartQuiz,
     getResults,
-    userAnswer, // The answer submitted by the user
+    userAnswer,
     isCorrect,
     feedbackMessage,
-    selectedOption // The option currently selected (before submitting)
+    selectedOption
   };
 }
