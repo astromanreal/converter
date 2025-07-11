@@ -22,6 +22,13 @@ const convertArea = (value: number, fromUnit: string, toUnit: string): number =>
   return valueInSquareMeters * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'acre', toUnit: 'm2', value: 1, label: '1 acre → m²' },
+  { fromUnit: 'ha', toUnit: 'acre', value: 1, label: '1 ha → acres' },
+  { fromUnit: 'ft2', toUnit: 'm2', value: 1000, label: '1000 ft² → m²' },
+  { fromUnit: 'm2', toUnit: 'ft2', value: 100, label: '100 m² → ft²' },
+];
+
 export function AreaConverter() {
   return (
     <ConverterLayout
@@ -29,6 +36,7 @@ export function AreaConverter() {
       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertArea}
       converterType="area" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

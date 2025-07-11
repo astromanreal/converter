@@ -7,7 +7,11 @@ export interface UserPreferences {
   preferredCurrency: string;
   preferredDistanceUnit: string;
   preferredWeightUnit: string;
-  // Add more preferences as needed
+  preferredTemperatureUnit: string;
+  preferredVolumeUnit: string;
+  preferredAreaUnit: string;
+  resultPrecision: number;
+  saveHistory: boolean;
 }
 
 const PREFERENCES_STORAGE_KEY = 'smartconvert-user-preferences';
@@ -16,6 +20,11 @@ const defaultPreferences: UserPreferences = {
   preferredCurrency: 'USD',
   preferredDistanceUnit: 'km',
   preferredWeightUnit: 'kg',
+  preferredTemperatureUnit: 'C',
+  preferredVolumeUnit: 'l',
+  preferredAreaUnit: 'm2',
+  resultPrecision: 4,
+  saveHistory: true,
 };
 
 export function useUserPreferences() {

@@ -25,6 +25,13 @@ const convertDataStorage = (value: number, fromUnit: string, toUnit: string): nu
   return valueInBytes * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'GB', toUnit: 'MB', value: 1, label: '1 GB → MB' },
+  { fromUnit: 'GiB', toUnit: 'MiB', value: 1, label: '1 GiB → MiB' },
+  { fromUnit: 'TB', toUnit: 'GB', value: 1, label: '1 TB → GB' },
+  { fromUnit: 'B', toUnit: 'bit', value: 1, label: '1 Byte → bits' },
+];
+
 export function DataStorageConverter() {
   return (
     <ConverterLayout
@@ -32,6 +39,7 @@ export function DataStorageConverter() {
       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertDataStorage}
       converterType="data-storage" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

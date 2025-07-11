@@ -22,13 +22,20 @@ const convertWeight = (value: number, fromUnit: string, toUnit: string): number 
   return valueInKilograms * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'kg', toUnit: 'lb', value: 1, label: '1 kg → lb' },
+  { fromUnit: 'g', toUnit: 'oz', value: 100, label: '100 g → oz' },
+  { fromUnit: 'lb', toUnit: 'kg', value: 1, label: '1 lb → kg' },
+  { fromUnit: 'st', toUnit: 'lb', value: 1, label: '1 st → lb' },
+];
+
 export function WeightConverter() {
   return (
     <ConverterLayout
       units={weightUnits}
-       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertWeight}
-      converterType="weight" // Pass the type for preference lookup
+      converterType="weight"
+      quickExamples={quickExamples}
     />
   );
 }

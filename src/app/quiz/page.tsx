@@ -154,11 +154,6 @@ export default function QuizPage() {
              {allQuestions.length > 0 ? "Select a difficulty to start the quiz." : "Loading questions..."}
            </div>
        )}
-
-         <div className="mt-12 p-4 border border-dashed rounded-lg text-center text-muted-foreground bg-muted/20 max-w-4xl mx-auto">
-             <p className="text-sm font-medium">Advertisement Placeholder</p>
-             <p className="text-xs mt-1">Relevant ad content could be displayed here.</p>
-         </div>
     </div>
   );
 }

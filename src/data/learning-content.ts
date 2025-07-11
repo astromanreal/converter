@@ -7,7 +7,6 @@ export interface LearningModule {
   key_units?: string[];
   conversion_examples?: { from: string; to: string }[];
   fun_fact?: string;
-  visual?: string; // Placeholder for image file name or path
 }
 
 export const learningContent: LearningModule[] = [
@@ -24,7 +23,6 @@ export const learningContent: LearningModule[] = [
       { from: "1 cm", to: "10 mm" },
     ],
     fun_fact: "The meter was originally defined in 1793 as one ten-millionth of the distance from the equator to the North Pole.",
-    visual: "metric_ruler.png",
   },
   {
     system: "Imperial/US Customary",
@@ -39,7 +37,6 @@ export const learningContent: LearningModule[] = [
       { from: "1 in", to: "≈ 2.54 cm" }, // Important conversion
     ],
     fun_fact: "The length of a 'foot' historically varied based on the size of the current king's foot!",
-    visual: "imperial_tape_measure.png",
   },
   // --- Weight/Mass ---
   {
@@ -55,7 +52,6 @@ export const learningContent: LearningModule[] = [
       { from: "1 kg", to: "≈ 2.205 lbs" },
     ],
     fun_fact: "Until 2019, the kilogram was defined by a physical cylinder of platinum-iridium alloy kept in France, known as the 'Le Grand K'. It's now defined by fundamental physical constants.",
-    visual: "kilogram_weights.png",
   },
   {
     system: "Imperial/US Customary",
@@ -69,7 +65,6 @@ export const learningContent: LearningModule[] = [
       { from: "1 st", to: "14 lb" },
       { from: "1 lb", to: "≈ 0.454 kg" },
     ],
-    visual: "scale_pounds.png",
   },
   // --- Temperature ---
   {
@@ -84,7 +79,6 @@ export const learningContent: LearningModule[] = [
       { from: "K", to: "°C + 273.15" },
     ],
     fun_fact: "0 Kelvin (-273.15 °C) is absolute zero, the theoretical point at which all molecular motion ceases.",
-    visual: "celsius_kelvin_thermometer.png",
   },
   {
     system: "Imperial/US Customary",
@@ -99,7 +93,6 @@ export const learningContent: LearningModule[] = [
       { from: "212 °F", to: "100 °C" },
     ],
     fun_fact: "Daniel Gabriel Fahrenheit based his scale on three points: a freezing brine solution (0°F), freezing water (32°F), and human body temperature (originally set at 96°F, later adjusted).",
-    visual: "fahrenheit_thermometer.png",
   },
   // --- Time ---
    {
@@ -136,7 +129,6 @@ export const learningContent: LearningModule[] = [
             { from: "1 MiB", to: "1024 KiB" },
         ],
         fun_fact: "The term 'byte' was coined by Werner Buchholz in 1956 during the early design phase for the IBM Stretch computer.",
-        visual: "binary_code.png",
     },
     // --- Chemistry ---
     {
@@ -163,7 +155,6 @@ export const learningContent: LearningModule[] = [
             { from: "pH + pOH", to: "= 14 (at 25°C)" },
         ],
         fun_fact: "The 'p' in pH stands for 'potential' or 'power' (from the German 'Potenz') of Hydrogen.",
-        visual: "ph_scale_colors.png",
     },
   // --- Fuel Economy ---
   {
@@ -177,6 +168,91 @@ export const learningContent: LearningModule[] = [
       { from: "10 km/L", to: "≈ 23.5 MPG (US)" },
     ],
     fun_fact: "Lower L/100km values and higher MPG or km/L values indicate better fuel efficiency. They are inversely related!",
-    visual: "fuel_gauge.png",
   },
+  // --- Currency ---
+  {
+    category: "Currency",
+    title: "Currency Exchange",
+    description: "Currency exchange rates determine how much one currency is worth in relation to another. These rates fluctuate constantly based on economic factors like inflation, interest rates, and trade balances.",
+    key_units: ["US Dollar (USD)", "Euro (EUR)", "Japanese Yen (JPY)", "British Pound (GBP)"],
+    fun_fact: "The word 'dollar' comes from 'Joachimsthaler,' a silver coin from a region in what is now the Czech Republic.",
+  },
+  // --- Volume ---
+  {
+    category: "Volume",
+    title: "Volume Units",
+    description: "Volume measures the three-dimensional space an object occupies. Units vary significantly between metric and imperial systems, and even within the imperial system (US vs. UK).",
+    key_units: ["Liter (L)", "Milliliter (mL)", "US Gallon (gal)", "UK Gallon (gal)", "Cubic Meter (m³)"],
+    conversion_examples: [
+        { from: "1 Liter", to: "1000 mL" },
+        { from: "1 US Gallon", to: "≈ 3.785 L" },
+        { from: "1 UK Gallon", to: "≈ 4.546 L" },
+    ],
+    fun_fact: "An Olympic swimming pool holds about 2.5 million liters of water.",
+  },
+  // --- Speed ---
+  {
+    category: "Speed",
+    title: "Speed Units",
+    description: "Speed is the rate at which an object covers distance. Different units are used depending on the context, such as for roads, air travel, or maritime navigation.",
+    key_units: ["Kilometers per hour (km/h)", "Miles per hour (mph)", "Meters per second (m/s)", "Knot"],
+    conversion_examples: [
+        { from: "100 km/h", to: "≈ 62.14 mph"},
+        { from: "1 knot", to: "1 nautical mile per hour"}
+    ],
+    fun_fact: "The International Space Station orbits Earth at a staggering ~28,000 km/h (~17,500 mph).",
+  },
+  // --- Area ---
+  {
+    category: "Area",
+    title: "Area Units",
+    description: "Area measures a two-dimensional surface. Units vary greatly from those used for a room's floor plan to those used for vast plots of land.",
+    key_units: ["Square Meter (m²)", "Hectare (ha)", "Square Foot (ft²)", "Acre (ac)"],
+    conversion_examples: [
+      { from: "1 Hectare", to: "10,000 m²"},
+      { from: "1 Acre", to: "≈ 4047 m²"},
+    ],
+    fun_fact: "An NFL football field, including end zones, covers about 1.32 acres.",
+  },
+  // --- Energy ---
+  {
+    category: "Energy",
+    title: "Energy Units",
+    description: "Energy is the capacity to do work. It comes in many forms and is measured in various units depending on the context, from the food we eat to the electricity that powers our homes.",
+    key_units: ["Joule (J)", "Kilowatt-hour (kWh)", "Calorie (kcal)", "British Thermal Unit (BTU)"],
+    fun_fact: "Lifting a small apple (102g) one meter high takes about 1 Joule of energy.",
+  },
+  // --- Pressure ---
+  {
+    category: "Pressure",
+    title: "Pressure Units",
+    description: "Pressure is the force applied perpendicular to the surface of an object per unit area. Different units are used in various fields like meteorology, engineering, and medicine.",
+    key_units: ["Pascal (Pa)", "Pound per square inch (psi)", "Atmosphere (atm)", "Bar"],
+    conversion_examples: [
+      { from: "1 atm", to: "≈ 101325 Pa"},
+      { from: "1 bar", to: "≈ 14.5 psi"},
+    ],
+    fun_fact: "Standard car tire pressure is around 32-35 psi.",
+  },
+  // --- Power ---
+  {
+    category: "Power",
+    title: "Power Units",
+    description: "Power is the rate at which energy is transferred or work is done. It's measured in units that describe energy per unit of time, like Joules per second (which is a Watt).",
+    key_units: ["Watt (W)", "Kilowatt (kW)", "Horsepower (hp)"],
+    fun_fact: "The term 'horsepower' was coined by Scottish engineer James Watt to compare the output of steam engines with the power of draft horses.",
+  },
+  // --- Electrical ---
+  {
+    category: "Electrical",
+    title: "Ohm's Law",
+    description: "Ohm's Law is a fundamental principle in electronics. It states that the current through a conductor between two points is directly proportional to the voltage across those two points.",
+    key_units: ["Voltage (V)", "Current (I)", "Resistance (R)"],
+    conversion_examples: [
+      { from: "V", to: "I × R"},
+      { from: "I", to: "V / R"},
+      { from: "R", to: "V / I"},
+    ],
+    fun_fact: "The law was named after the German physicist Georg Ohm, who published his findings in 1827. His work was initially met with skepticism!",
+  }
 ];

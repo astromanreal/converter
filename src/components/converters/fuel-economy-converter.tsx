@@ -54,6 +54,13 @@ const convertFuelEconomy = (value: number, fromUnit: string, toUnit: string): nu
   return result;
 };
 
+const quickExamples = [
+    { fromUnit: 'l_100km', toUnit: 'mpg_us', value: 8, label: '8 L/100km → MPG US' },
+    { fromUnit: 'mpg_us', toUnit: 'l_100km', value: 30, label: '30 MPG US → L/100km' },
+    { fromUnit: 'km_l', toUnit: 'mpg_us', value: 10, label: '10 km/L → MPG US' },
+    { fromUnit: 'mpg_uk', toUnit: 'mpg_us', value: 1, label: '1 MPG UK → MPG US' },
+];
+
 
 export function FuelEconomyConverter() {
   return (
@@ -61,6 +68,7 @@ export function FuelEconomyConverter() {
       units={fuelEconomyUnits}
       conversionFn={convertFuelEconomy}
       converterType="fuel-economy"
+      quickExamples={quickExamples}
     />
   );
 }

@@ -3,99 +3,108 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { ArrowRightLeft } from 'lucide-react';
+import { ArrowRightLeft, Copy, Share2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useUserPreferences } from '@/hooks/use-user-preferences'; // Import the preferences hook
-import type { Unit } from '@/lib/units'; // Import Unit type
-import { addHistoryEntry } from '@/services/history'; // Import history service
+import { useUserPreferences } from '@/hooks/use-user-preferences';
+import type { Unit } from '@/lib/units';
+import { addHistoryEntry } from '@/services/history';
+import { Combobox } from '@/components/ui/combobox';
+import { useToast } from '@/hooks/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
 
-// Define the types of converters that have preferences
-type PreferableConverterType = 'currency' | 'distance' | 'weight'; // Add more as needed
+type PreferableConverterType = 'currency' | 'distance' | 'weight' | 'temperature' | 'volume' | 'area';
+
+interface QuickExample {
+  fromUnit: string;
+  toUnit: string;
+  value: number;
+  label: string;
+}
 
 interface ConverterLayoutProps {
   units: Unit[];
-  conversionFn: (value: number, fromUnit: string, toUnit: string) => number | string; // Allow string for formatted results or errors
-  converterType: string; // Type of the converter (e.g., 'currency', 'distance')
-  isLoading?: boolean; // Optional loading state from parent
-  errorMessage?: string; // Optional error message from parent
+  conversionFn: (value: number, fromUnit: string, toUnit: string) => number | string;
+  converterType: string;
+  isLoading?: boolean;
+  errorMessage?: string;
+  rateInfoFn?: (fromUnit: string, toUnit: string) => {rate: string} | null;
+  quickExamples?: QuickExample[];
 }
 
 export function ConverterLayout({
     units,
     conversionFn,
-    converterType, // Use the converter type
-    isLoading = false, // Default to false if not provided
-    errorMessage
+    converterType,
+    isLoading = false,
+    errorMessage,
+    rateInfoFn,
+    quickExamples,
 }: ConverterLayoutProps) {
   const { preferences, isLoaded: preferencesLoaded } = useUserPreferences();
+  const { toast } = useToast();
 
-  // State for units and values
   const [fromValue, setFromValue] = useState<string>('1');
   const [toValue, setToValue] = useState<string>('');
   const [fromUnit, setFromUnit] = useState<string>('');
   const [toUnit, setToUnit] = useState<string>('');
   const [defaultsSet, setDefaultsSet] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
+  const [hint, setHint] = useState<string | null>(null);
 
-  // Determine default units based on preferences or fallbacks
+
   useEffect(() => {
     if (preferencesLoaded && !defaultsSet) {
-        let defaultFrom = units[0]?.value || ''; // Fallback to first unit
-        let defaultTo = units[1]?.value || units[0]?.value || ''; // Fallback to second or first unit
+        let defaultFrom = units[0]?.value || '';
+        let defaultTo = units[1]?.value || units[0]?.value || '';
 
-        // Set defaults based on converter type and preferences
         switch (converterType as PreferableConverterType) {
             case 'currency':
                 defaultFrom = preferences.preferredCurrency || defaultFrom;
-                // Try to set a different default 'to' unit if possible
-                defaultTo = units.find(u => u.value !== defaultFrom)?.value || defaultTo;
-                 // Specific common pairing if preference is USD
-                 if (defaultFrom === 'USD' && units.some(u => u.value === 'INR')) {
-                    defaultTo = 'INR';
-                } else if (defaultFrom === 'EUR' && units.some(u => u.value === 'USD')) {
-                    defaultTo = 'USD';
-                }
                 break;
             case 'distance':
                 defaultFrom = preferences.preferredDistanceUnit || defaultFrom;
-                defaultTo = units.find(u => u.value !== defaultFrom)?.value || defaultTo;
-                // Common pairing
-                if (defaultFrom === 'km' && units.some(u => u.value === 'mi')) defaultTo = 'mi';
-                else if (defaultFrom === 'mi' && units.some(u => u.value === 'km')) defaultTo = 'km';
                 break;
             case 'weight':
                 defaultFrom = preferences.preferredWeightUnit || defaultFrom;
-                defaultTo = units.find(u => u.value !== defaultFrom)?.value || defaultTo;
-                 // Common pairing
-                 if (defaultFrom === 'kg' && units.some(u => u.value === 'lb')) defaultTo = 'lb';
-                 else if (defaultFrom === 'lb' && units.some(u => u.value === 'kg')) defaultTo = 'kg';
                 break;
-            // Add cases for other preference types here
+             case 'temperature':
+                defaultFrom = preferences.preferredTemperatureUnit || defaultFrom;
+                break;
+             case 'volume':
+                defaultFrom = preferences.preferredVolumeUnit || defaultFrom;
+                break;
+             case 'area':
+                defaultFrom = preferences.preferredAreaUnit || defaultFrom;
+                break;
             default:
-                 // Keep generic fallbacks for converters without specific preferences
-                 defaultFrom = units[0]?.value || '';
-                 defaultTo = units[1]?.value || units[0]?.value || '';
+                 break;
         }
+        
+        // Ensure defaultFrom exists in the current converter's units
+        if (!units.some(u => u.value === defaultFrom)) defaultFrom = units[0]?.value || '';
 
-         // Ensure defaultFrom and defaultTo are valid units in the list
-         if (!units.some(u => u.value === defaultFrom)) defaultFrom = units[0]?.value || '';
-         if (!units.some(u => u.value === defaultTo) || defaultFrom === defaultTo) {
-             // Find the next available different unit
+        // Pick a different defaultTo unit
+        if (converterType === 'currency' && defaultFrom === 'USD' && units.some(u => u.value === 'INR')) {
+            defaultTo = 'INR';
+        } else if (converterType === 'distance' && defaultFrom === 'km' && units.some(u => u.value === 'mi')) {
+            defaultTo = 'mi';
+        } else if (converterType === 'weight' && defaultFrom === 'kg' && units.some(u => u.value === 'lb')) {
+            defaultTo = 'lb';
+        } else {
              defaultTo = units.find(u => u.value !== defaultFrom)?.value || units[0]?.value || '';
-         }
+        }
 
         setFromUnit(defaultFrom);
         setToUnit(defaultTo);
-        setDefaultsSet(true); // Mark defaults as set
+        setDefaultsSet(true);
     }
   }, [preferencesLoaded, preferences, units, converterType, defaultsSet]);
 
 
   const calculateConversion = useCallback((triggeredByUserInteraction = false) => {
-    // Wait until default units are set
      if (!defaultsSet || fromUnit === '' || toUnit === '') {
-        setToValue(''); // Or a loading indicator if preferred
+        setToValue('');
         return;
     }
 
@@ -109,23 +118,22 @@ export function ConverterLayout({
     }
 
     const value = parseFloat(fromValue);
-    if (!isNaN(value) && fromValue.trim() !== '') { // Ensure input is not just whitespace
+    if (!isNaN(value) && fromValue.trim() !== '') {
       try {
         const result = conversionFn(value, fromUnit, toUnit);
         let resultString: string;
 
         if (typeof result === 'number') {
-           const formattedResult = Number(result.toFixed(6));
-           // Remove trailing zeros after decimal, but keep integer part
+           const precision = preferences.resultPrecision ?? 4;
+           const formattedResult = Number(result.toFixed(precision));
            resultString = formattedResult.toString().includes('.') ? formattedResult.toString().replace(/\.?0+$/, '') : formattedResult.toString();
         } else {
-           resultString = result; // Use string result directly (e.g., "Rate N/A")
+           resultString = result;
         }
         setToValue(resultString);
+        setAnimationKey(prev => prev + 1);
 
-        // Save to history only if the conversion was successful (result is not an error/loading string)
-        // and triggered by user interaction (value change, unit change, swap)
-         if (triggeredByUserInteraction && typeof result === 'number' && !isNaN(result) && resultString !== "Error" && resultString !== "Invalid Input" && resultString !== "Loading..." ) {
+         if (preferences.saveHistory && triggeredByUserInteraction && typeof result === 'number' && !isNaN(result) && !["Error", "Rate N/A", "Invalid Rate", "Invalid Input", "Loading..."].includes(resultString) ) {
              addHistoryEntry({
                converterType,
                fromUnit,
@@ -140,78 +148,122 @@ export function ConverterLayout({
         setToValue("Error");
       }
     } else if (fromValue.trim() === '') {
-        setToValue(''); // Clear output if input is empty
+        setToValue('');
     } else {
-        setToValue("Invalid Input"); // Handle non-numeric input
+        setToValue("Invalid Input");
     }
-  }, [fromValue, fromUnit, toUnit, conversionFn, isLoading, errorMessage, defaultsSet, converterType]); // Added dependencies
-
+  }, [fromValue, fromUnit, toUnit, conversionFn, isLoading, errorMessage, defaultsSet, converterType, preferences.resultPrecision, preferences.saveHistory]);
 
   useEffect(() => {
-    // Calculate conversion on initial load once defaults are set
     if(defaultsSet) {
-        calculateConversion(false); // Initial calculation is not user-triggered for history
+        calculateConversion(false);
     }
-  }, [calculateConversion, defaultsSet]); // Rerun calculation when defaults are set
+  }, [calculateConversion, defaultsSet]);
 
-  // Recalculate when units change (user-triggered)
   useEffect(() => {
       if(defaultsSet) {
           calculateConversion(true);
       }
   }, [fromUnit, toUnit, calculateConversion, defaultsSet]);
 
+   useEffect(() => {
+    const numericToValue = parseFloat(toValue);
+    if (isNaN(numericToValue) || numericToValue === 0) {
+      setHint(null);
+      return;
+    }
+    const precision = preferences.resultPrecision ?? 4;
+    if (numericToValue > 0 && numericToValue < (1 / (10 ** (precision - 1))) ) {
+       setHint("Result is very small. Try a different 'To' unit for better readability.");
+    } else {
+      setHint(null);
+    }
+   }, [toValue, preferences.resultPrecision]);
+
 
   const handleSwapUnits = () => {
      const currentFromUnit = fromUnit;
-     const currentToUnit = toUnit;
-     const currentToValue = toValue; // Capture current result
-
-     setFromUnit(currentToUnit);
+     setFromUnit(toUnit);
      setToUnit(currentFromUnit);
-
-      // Check if the current 'toValue' is a valid number before swapping
-      const numericToValue = parseFloat(currentToValue);
-       if (!isNaN(numericToValue) && currentToValue.trim() !== '' && !["Loading...", "Error", "Rate N/A", "Invalid Input"].includes(currentToValue) ) {
-           setFromValue(currentToValue); // Swap value only if it's a valid number result
-       } else {
-           // If 'toValue' wasn't a valid number, keep 'fromValue' as is
-           // and just trigger recalculation with the new units.
-           // calculateConversion will run due to the state change of units.
-           // We still need to ensure it's marked as user-triggered if needed.
-           // Note: The useEffect for unit changes already handles this.
-       }
-       // The useEffect watching fromUnit/toUnit will trigger recalculation and history add
   };
 
   const handleFromValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-     // Allow empty, '-', or valid number patterns (including decimals)
     if (value === '' || value === '-' || /^-?\d*\.?\d*$/.test(value)) {
        setFromValue(value);
-       // Trigger calculation immediately on valid input change (user-triggered)
         if (value !== '' && value !== '-' && !value.endsWith('.')) {
              calculateConversion(true);
         } else if (value === '') {
-             setToValue(''); // Clear result if input is cleared
+             setToValue('');
         }
     }
   };
 
-  // Wait until preferences are loaded and defaults are set before rendering the full layout
+  const handleCopy = async () => {
+    if (!toValue || isNaN(parseFloat(toValue))) {
+        toast({ title: "Nothing to copy", description: "Please perform a valid conversion first.", variant: "destructive" });
+        return;
+    }
+    await navigator.clipboard.writeText(toValue);
+    toast({ title: "Copied!", description: `Result "${toValue}" copied to clipboard.`});
+  };
+
+  const handleShare = async () => {
+    if (!toValue || isNaN(parseFloat(toValue))) {
+        toast({ title: "Nothing to share", description: "Please perform a valid conversion first.", variant: "destructive" });
+        return;
+    }
+    const shareData = {
+      title: 'SmartConvert Conversion',
+      text: `${fromValue} ${fromUnit} is ${toValue} ${toUnit}`,
+      url: window.location.href,
+    };
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (err: any) {
+            if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
+                 console.error("Share failed:", err);
+                 toast({
+                    title: "Sharing Failed",
+                    description: "An unexpected error occurred while trying to share.",
+                    variant: "destructive",
+                  });
+            }
+        }
+    } else {
+        await navigator.clipboard.writeText(shareData.text);
+        toast({ title: "Link Copied!", description: "Sharing not supported, conversion details copied instead." });
+    }
+  };
+
+  const handleQuickExampleClick = (example: QuickExample) => {
+    setFromUnit(example.fromUnit);
+    setToUnit(example.toUnit);
+    setFromValue(String(example.value));
+  };
+
+
    if (!defaultsSet) {
-       return <div className="text-center p-4 text-muted-foreground">Loading preferences...</div>; // Or a Skeleton loader
+       return <div className="text-center p-4 text-muted-foreground">Loading preferences...</div>;
    }
 
+  const rateInfo = rateInfoFn ? rateInfoFn(fromUnit, toUnit) : null;
 
   return (
-    <div className="space-y-6">
-       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-end gap-4">
-        {/* From Section */}
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start gap-4">
         <div className="space-y-2">
-          <Label htmlFor={`${converterType}-from-value`} className="text-sm font-medium">From</Label>
-          <div className="flex gap-2">
-            <Input
+          <Label htmlFor={`${converterType}-from-unit`}>From</Label>
+          <Combobox
+              units={units}
+              value={fromUnit}
+              onChange={setFromUnit}
+              placeholder="Select a unit"
+              searchPlaceholder="Search units..."
+              emptyPlaceholder="No units found."
+            />
+          <Input
               id={`${converterType}-from-value`}
               type="text"
               inputMode="decimal"
@@ -221,70 +273,86 @@ export function ConverterLayout({
               className="flex-grow"
               autoComplete="off"
             />
-             <Select value={fromUnit} onValueChange={setFromUnit} disabled={!units.length}>
-              <SelectTrigger id={`${converterType}-from-unit`} className="w-[150px] shrink-0">
-                <SelectValue placeholder="Unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {units.map((unit) => (
-                  <SelectItem key={unit.value} value={unit.value}>
-                    {unit.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
-        {/* Swap Button */}
-         <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleSwapUnits}
-          aria-label="Swap units"
-          className="self-end mb-1 hidden md:inline-flex"
-          disabled={isLoading || !units.length}
-         >
-          <ArrowRightLeft className="h-5 w-5 text-primary" />
-         </Button>
-          <Button
-             variant="outline"
-             onClick={handleSwapUnits}
-             aria-label="Swap units"
-             className="w-full md:hidden mt-2"
-             disabled={isLoading || !units.length}
-            >
-             <ArrowRightLeft className="mr-2 h-4 w-4 text-primary" /> Swap Units
-         </Button>
+        <div className="w-full md:w-auto flex justify-center items-end h-full">
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleSwapUnits}
+                            aria-label="Swap units"
+                            className="self-center mt-2 md:mt-0 group"
+                            disabled={isLoading || !units.length}
+                        >
+                            <ArrowRightLeft className="h-5 w-5 text-primary transition-transform duration-300 group-hover:rotate-180" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Swap Units</TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        </div>
 
-        {/* To Section */}
         <div className="space-y-2">
-          <Label htmlFor={`${converterType}-to-value`} className="text-sm font-medium">To</Label>
-          <div className="flex gap-2">
-           <Input
+          <Label htmlFor={`${converterType}-to-unit`}>To</Label>
+          <Combobox
+              units={units}
+              value={toUnit}
+              onChange={setToUnit}
+              placeholder="Select a unit"
+              searchPlaceholder="Search units..."
+              emptyPlaceholder="No units found."
+            />
+          <div className="relative">
+            <Input
+              key={animationKey}
               id={`${converterType}-to-value`}
               type="text"
               value={toValue}
               readOnly
               placeholder="Result"
-              className="flex-grow bg-muted/50 border-muted"
+              className="flex-grow bg-muted/50 border-muted pr-20 animate-in fade-in duration-300"
               aria-live="polite"
             />
-            <Select value={toUnit} onValueChange={setToUnit} disabled={!units.length}>
-              <SelectTrigger id={`${converterType}-to-unit`} className="w-[150px] shrink-0">
-                <SelectValue placeholder="Unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {units.map((unit) => (
-                  <SelectItem key={unit.value} value={unit.value}>
-                    {unit.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+             <div className="absolute right-1 top-0 h-full flex items-center">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={handleCopy}><Copy className="h-4 w-4"/></Button></TooltipTrigger>
+                        <TooltipContent>Copy Result</TooltipContent>
+                    </Tooltip>
+                    {typeof navigator !== 'undefined' && navigator.share && <Tooltip>
+                        <TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={handleShare}><Share2 className="h-4 w-4"/></Button></TooltipTrigger>
+                        <TooltipContent>Share Result</TooltipContent>
+                    </Tooltip>}
+                </TooltipProvider>
+            </div>
           </div>
+           {hint && (
+            <div className="text-center text-xs text-muted-foreground pt-1 flex items-center justify-center gap-1">
+              <Lightbulb className="h-3 w-3 text-yellow-500" /> {hint}
+            </div>
+           )}
         </div>
       </div>
+      {rateInfo && (
+            <div className="text-center text-sm text-muted-foreground pt-2">
+                <p className="font-medium text-foreground">{rateInfo.rate}</p>
+            </div>
+      )}
+      {quickExamples && quickExamples.length > 0 && (
+        <div className="pt-4">
+          <p className="text-sm font-medium text-center mb-2 text-muted-foreground">Quick Conversions</p>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {quickExamples.map((ex, i) => (
+              <Button key={i} variant="outline" size="sm" onClick={() => handleQuickExampleClick(ex)}>
+                {ex.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -23,6 +23,13 @@ const convertEnergy = (value: number, fromUnit: string, toUnit: string): number 
   return valueInJoules * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'kJ', toUnit: 'J', value: 1, label: '1 kJ → J' },
+  { fromUnit: 'kcal', toUnit: 'kJ', value: 100, label: '100 kcal → kJ' },
+  { fromUnit: 'kWh', toUnit: 'J', value: 1, label: '1 kWh → Joules' },
+  { fromUnit: 'Btu', toUnit: 'kJ', value: 1, label: '1 BTU → kJ' },
+];
+
 export function EnergyConverter() {
   return (
     <ConverterLayout
@@ -30,6 +37,7 @@ export function EnergyConverter() {
       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertEnergy}
       converterType="energy" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

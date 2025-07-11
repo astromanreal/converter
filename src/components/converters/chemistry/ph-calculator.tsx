@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
 
 type CalculationType = 'h_concentration' | 'oh_concentration' | 'ph' | 'poh';
 
@@ -75,8 +76,6 @@ export function PHCalculator() {
                 ph = -Math.log10(hConcentration);
                  if (ph < 0 || ph > 14) { // Check calculated pH range
                     ph = Math.max(0, Math.min(14, ph)); // Clamp pH
-                     // Optionally set an info message instead of error?
-                     // setError("Calculated pH outside typical range (0-14).")
                  }
                 poh = 14 - ph;
                 ohConcentration = 10 ** (-poh);
@@ -116,8 +115,6 @@ export function PHCalculator() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      setInputValue(e.target.value);
-     // Debounced calculation could be added here if needed
-      // For simplicity, calculation happens on button click or slider change
   };
 
    const handleSliderChange = (value: number[]) => {
@@ -164,8 +161,6 @@ export function PHCalculator() {
                 setCalculationType(newType);
                  // Reset input value or set a sensible default when type changes
                  setInputValue(newType === 'ph' || newType === 'poh' ? '7' : '1e-7');
-                 // Recalculate immediately when type changes? Optional.
-                 // calculatePH(newType === 'ph' || newType === 'poh' ? 7 : 1e-7, newType);
             }}
             className="flex flex-wrap gap-4"
           >
@@ -179,52 +174,52 @@ export function PHCalculator() {
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="h_concentration" id="h_concentration" />
-              <Label htmlFor="h_concentration">[H⁺] Concentration (mol/L)</Label>
+              <Label htmlFor="h_concentration">[H⁺] Conc. (mol/L)</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="oh_concentration" id="oh_concentration" />
-              <Label htmlFor="oh_concentration">[OH⁻] Concentration (mol/L)</Label>
+              <Label htmlFor="oh_concentration">[OH⁻] Conc. (mol/L)</Label>
             </div>
           </RadioGroup>
        </div>
 
       <div>
         <Label htmlFor="ph-input" className="text-sm font-medium">Input Value</Label>
-        <Input
-          id="ph-input"
-          type={getInputType()}
-          inputMode={getInputType() === 'number' ? 'decimal' : 'text'} // Adjust input mode
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder={getPlaceholder()}
-          step={calculationType === 'ph' || calculationType === 'poh' ? "0.01" : undefined}
-          className="mt-1"
-        />
+        <div className="flex gap-2">
+            <Input
+                id="ph-input"
+                type={getInputType()}
+                inputMode={getInputType() === 'number' ? 'decimal' : 'text'}
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyPress={(e) => e.key === 'Enter' && handleCalculateClick()}
+                placeholder={getPlaceholder()}
+                step={calculationType === 'ph' || calculationType === 'poh' ? "0.01" : "any"}
+                className="mt-1 flex-grow"
+            />
+            <Button onClick={handleCalculateClick} className="mt-1">Calculate</Button>
+        </div>
       </div>
 
-       {/* Only show slider when calculating from pH */}
        {calculationType === 'ph' && (
            <div>
-               <Label htmlFor="ph-slider" className="text-sm font-medium">Adjust pH</Label>
+               <Label htmlFor="ph-slider" className="text-sm font-medium">Adjust pH with Slider</Label>
                <Slider
                    id="ph-slider"
                    min={0}
                    max={14}
                    step={0.1}
-                   value={[result.ph ?? 7]} // Use calculated pH or default
+                   value={[result.ph ?? 7]}
                    onValueChange={handleSliderChange}
                    className="mt-2"
                />
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                   <span>0 (Acidic)</span>
-                   <span>7 (Neutral)</span>
-                   <span>14 (Alkaline)</span>
+                <div className="flex justify-between text-xs font-medium mt-1">
+                   <span className="text-red-500">Acidic</span>
+                   <span className="text-green-500">Neutral</span>
+                   <span className="text-blue-500">Alkaline</span>
                </div>
            </div>
        )}
-
-
-      <Button onClick={handleCalculateClick}>Calculate</Button>
 
       {error && (
         <Alert variant="destructive">
@@ -237,17 +232,21 @@ export function PHCalculator() {
         <Alert>
           <AlertTitle>Results</AlertTitle>
           <AlertDescription>
-            <ul className="space-y-1 list-disc list-inside">
-                 <li>pH: <span className="font-semibold">{result.ph}</span> ({result.ph < 7 ? 'Acidic' : result.ph > 7 ? 'Alkaline' : 'Neutral'})</li>
-                 <li>pOH: <span className="font-semibold">{result.poh}</span></li>
-                 <li>[H⁺]: <span className="font-semibold">{result.h?.toExponential(2)}</span> mol/L</li>
-                 <li>[OH⁻]: <span className="font-semibold">{result.oh?.toExponential(2)}</span> mol/L</li>
-            </ul>
+            <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-2 text-base",
+                result.ph < 7 ? "text-red-600 dark:text-red-400" :
+                result.ph > 7 ? "text-blue-600 dark:text-blue-400" :
+                "text-green-600 dark:text-green-400"
+            )}>
+                 <div>pH: <span className="font-semibold">{result.ph}</span></div>
+                 <div>pOH: <span className="font-semibold">{result.poh}</span></div>
+                 <div>[H⁺]: <span className="font-semibold">{result.h?.toExponential(2)}</span> M</div>
+                 <div>[OH⁻]: <span className="font-semibold">{result.oh?.toExponential(2)}</span> M</div>
+            </div>
           </AlertDescription>
         </Alert>
       )}
       <div className="text-xs text-muted-foreground pt-2">
-          Calculations assume standard temperature (25°C) where Kw = 1.0 x 10⁻¹⁴.
+          Calculations assume standard temperature (25°C) where Kw = 1.0 x 10⁻¹⁴. M = mol/L.
       </div>
     </div>
   );

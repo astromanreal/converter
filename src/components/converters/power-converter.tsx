@@ -22,6 +22,13 @@ const convertPower = (value: number, fromUnit: string, toUnit: string): number =
   return valueInWatts * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'kW', toUnit: 'W', value: 1, label: '1 kW → W' },
+  { fromUnit: 'hp_e', toUnit: 'W', value: 1, label: '1 hp → W' },
+  { fromUnit: 'W', toUnit: 'Btu/h', value: 100, label: '100 W → BTU/h' },
+  { fromUnit: 'kW', toUnit: 'hp_e', value: 10, label: '10 kW → hp' },
+];
+
 export function PowerConverter() {
   return (
     <ConverterLayout
@@ -29,6 +36,7 @@ export function PowerConverter() {
       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertPower}
       converterType="power" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

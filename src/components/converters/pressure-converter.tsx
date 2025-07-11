@@ -21,6 +21,12 @@ const convertPressure = (value: number, fromUnit: string, toUnit: string): numbe
   return valueInPascals * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'atm', toUnit: 'Pa', value: 1, label: '1 atm → Pa' },
+  { fromUnit: 'bar', toUnit: 'psi', value: 1, label: '1 bar → psi' },
+  { fromUnit: 'torr', toUnit: 'atm', value: 760, label: '760 mmHg → atm' },
+];
+
 export function PressureConverter() {
   return (
     <ConverterLayout
@@ -28,6 +34,7 @@ export function PressureConverter() {
       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertPressure}
       converterType="pressure" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

@@ -3,12 +3,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useUserPreferences, UserPreferences } from '@/hooks/use-user-preferences';
-import { currencyUnits, distanceUnits, weightUnits } from '@/lib/units'; // Import shared units
+import { currencyUnits, distanceUnits, weightUnits, temperatureUnits, volumeUnits, areaUnits } from '@/lib/units';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Separator } from '@/components/ui/separator';
 
 export function UserPreferencesForm() {
   const { preferences, savePreferences, isLoaded, defaultPreferences } = useUserPreferences();
@@ -22,7 +25,7 @@ export function UserPreferencesForm() {
     }
   }, [isLoaded, preferences]);
 
-  const handlePreferenceChange = (key: keyof UserPreferences, value: string) => {
+  const handlePreferenceChange = (key: keyof UserPreferences, value: string | number | boolean) => {
     setLocalPreferences(prev => ({ ...prev, [key]: value }));
   };
 
@@ -42,17 +45,15 @@ export function UserPreferencesForm() {
         description: "Failed to save preferences. Please try again.",
         variant: "destructive",
       });
-       // Optionally revert local state if save fails
        setLocalPreferences(preferences);
     }
   };
 
-  // Check if local state differs from saved state
   const hasChanges = JSON.stringify(localPreferences) !== JSON.stringify(preferences);
 
   if (!isLoaded) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <Skeleton className="h-8 w-1/3" />
         <div className="space-y-2">
             <Skeleton className="h-4 w-1/4" />
@@ -72,80 +73,106 @@ export function UserPreferencesForm() {
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium text-foreground">Default Units</h3>
-      <p className="text-sm text-muted-foreground">
-        Set your preferred default units for conversions. These will be pre-selected when you open a converter.
-      </p>
-
-      {/* Preferred Currency */}
-      <div className="space-y-2">
-        <Label htmlFor="preferred-currency" className="text-sm font-medium">Preferred Currency</Label>
-        <Select
-          value={localPreferences.preferredCurrency}
-          onValueChange={(value) => handlePreferenceChange('preferredCurrency', value)}
-          disabled={isSaving}
-        >
-          <SelectTrigger id="preferred-currency">
-            <SelectValue placeholder="Select default currency" />
-          </SelectTrigger>
-          <SelectContent>
-            {currencyUnits.map((unit) => (
-              <SelectItem key={unit.value} value={unit.value}>
-                {unit.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="space-y-6">
+       <div>
+        <h3 className="text-lg font-medium text-foreground">Functionality</h3>
+        <p className="text-sm text-muted-foreground mb-4">Control application behavior like history and precision.</p>
+        <div className="space-y-4">
+            <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                    <Label htmlFor="save-history" className="font-medium">Save Conversion History</Label>
+                    <p className="text-xs text-muted-foreground">
+                        Automatically save your conversions in your browser.
+                    </p>
+                </div>
+                <Switch
+                    id="save-history"
+                    checked={localPreferences.saveHistory}
+                    onCheckedChange={(checked) => handlePreferenceChange('saveHistory', checked)}
+                    disabled={isSaving}
+                    aria-label="Toggle conversion history saving"
+                />
+            </div>
+             <div className="rounded-lg border p-3 shadow-sm space-y-2">
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="result-precision" className="font-medium">Result Precision</Label>
+                     <span className="text-sm text-muted-foreground font-medium">{localPreferences.resultPrecision} decimal places</span>
+                </div>
+                 <p className="text-xs text-muted-foreground">
+                    Set the number of decimal places for conversion results.
+                </p>
+                <Slider
+                    id="result-precision"
+                    min={2}
+                    max={8}
+                    step={1}
+                    value={[localPreferences.resultPrecision]}
+                    onValueChange={(value) => handlePreferenceChange('resultPrecision', value[0])}
+                    disabled={isSaving}
+                    className="pt-2"
+                />
+            </div>
+        </div>
       </div>
 
-      {/* Preferred Distance Unit */}
-      <div className="space-y-2">
-        <Label htmlFor="preferred-distance" className="text-sm font-medium">Preferred Distance Unit</Label>
-        <Select
-          value={localPreferences.preferredDistanceUnit}
-          onValueChange={(value) => handlePreferenceChange('preferredDistanceUnit', value)}
-          disabled={isSaving}
-        >
-          <SelectTrigger id="preferred-distance">
-            <SelectValue placeholder="Select default distance unit" />
-          </SelectTrigger>
-          <SelectContent>
-            {distanceUnits.map((unit) => (
-              <SelectItem key={unit.value} value={unit.value}>
-                {unit.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <Separator />
+
+      <div>
+        <h3 className="text-lg font-medium text-foreground">Default Units</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+            Set your preferred units. These will be pre-selected when you open a converter.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+                <Label htmlFor="preferred-currency">Currency</Label>
+                <Select value={localPreferences.preferredCurrency} onValueChange={(v) => handlePreferenceChange('preferredCurrency', v)} disabled={isSaving}>
+                <SelectTrigger id="preferred-currency"><SelectValue /></SelectTrigger>
+                <SelectContent>{currencyUnits.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}</SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="preferred-distance">Distance</Label>
+                <Select value={localPreferences.preferredDistanceUnit} onValueChange={(v) => handlePreferenceChange('preferredDistanceUnit', v)} disabled={isSaving}>
+                <SelectTrigger id="preferred-distance"><SelectValue /></SelectTrigger>
+                <SelectContent>{distanceUnits.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}</SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="preferred-weight">Weight/Mass</Label>
+                <Select value={localPreferences.preferredWeightUnit} onValueChange={(v) => handlePreferenceChange('preferredWeightUnit', v)} disabled={isSaving}>
+                <SelectTrigger id="preferred-weight"><SelectValue /></SelectTrigger>
+                <SelectContent>{weightUnits.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}</SelectContent>
+                </Select>
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="preferred-temperature">Temperature</Label>
+                <Select value={localPreferences.preferredTemperatureUnit} onValueChange={(v) => handlePreferenceChange('preferredTemperatureUnit', v)} disabled={isSaving}>
+                <SelectTrigger id="preferred-temperature"><SelectValue /></SelectTrigger>
+                <SelectContent>{temperatureUnits.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}</SelectContent>
+                </Select>
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="preferred-volume">Volume</Label>
+                <Select value={localPreferences.preferredVolumeUnit} onValueChange={(v) => handlePreferenceChange('preferredVolumeUnit', v)} disabled={isSaving}>
+                <SelectTrigger id="preferred-volume"><SelectValue /></SelectTrigger>
+                <SelectContent>{volumeUnits.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}</SelectContent>
+                </Select>
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="preferred-area">Area</Label>
+                <Select value={localPreferences.preferredAreaUnit} onValueChange={(v) => handlePreferenceChange('preferredAreaUnit', v)} disabled={isSaving}>
+                <SelectTrigger id="preferred-area"><SelectValue /></SelectTrigger>
+                <SelectContent>{areaUnits.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}</SelectContent>
+                </Select>
+            </div>
+        </div>
       </div>
 
-      {/* Preferred Weight Unit */}
-      <div className="space-y-2">
-        <Label htmlFor="preferred-weight" className="text-sm font-medium">Preferred Weight/Mass Unit</Label>
-        <Select
-          value={localPreferences.preferredWeightUnit}
-          onValueChange={(value) => handlePreferenceChange('preferredWeightUnit', value)}
-          disabled={isSaving}
-        >
-          <SelectTrigger id="preferred-weight">
-            <SelectValue placeholder="Select default weight unit" />
-          </SelectTrigger>
-          <SelectContent>
-            {weightUnits.map((unit) => (
-              <SelectItem key={unit.value} value={unit.value}>
-                {unit.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="pt-4">
+        <Button onClick={handleSaveChanges} disabled={isSaving || !hasChanges}>
+            {isSaving ? 'Saving...' : 'Save Changes'}
+        </Button>
       </div>
-
-      {/* Add more preference selectors here (e.g., temperature, volume) */}
-
-      <Button onClick={handleSaveChanges} disabled={isSaving || !hasChanges}>
-        {isSaving ? 'Saving...' : 'Save Preferences'}
-      </Button>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { ConverterLayout } from './shared/converter-layout';
@@ -23,6 +22,13 @@ const convertTime = (value: number, fromUnit: string, toUnit: string): number =>
   return valueInSeconds * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'h', toUnit: 'min', value: 1, label: '1 hour → min' },
+  { fromUnit: 'd', toUnit: 'h', value: 1, label: '1 day → hours' },
+  { fromUnit: 'min', toUnit: 's', value: 1, label: '1 min → sec' },
+  { fromUnit: 'wk', toUnit: 'd', value: 1, label: '1 week → days' },
+];
+
 export function TimeConverter() {
   return (
     <ConverterLayout
@@ -30,6 +36,7 @@ export function TimeConverter() {
        // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertTime}
       converterType="time" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

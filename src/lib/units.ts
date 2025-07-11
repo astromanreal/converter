@@ -4,17 +4,27 @@
 export interface Unit {
     value: string;
     label: string;
+    countryCode?: string; // Optional for flags
+  }
+
+  // Helper function to convert country code to flag emoji
+  export function countryCodeToFlag(code: string | undefined): string {
+      if (!code) return '🏳️';
+      const codePoints = code
+          .toUpperCase()
+          .split('')
+          .map(char => 127397 + char.charCodeAt(0));
+      return String.fromCodePoint(...codePoints);
   }
 
   export const currencyUnits: Unit[] = [
-    { value: 'USD', label: 'USD - US Dollar' },
-    { value: 'EUR', label: 'EUR - Euro' },
-    { value: 'GBP', label: 'GBP - British Pound' },
-    { value: 'JPY', label: 'JPY - Japanese Yen' },
-    { value: 'CAD', label: 'CAD - Canadian Dollar' },
-    { value: 'AUD', label: 'AUD - Australian Dollar' },
-    { value: 'INR', label: 'INR - Indian Rupee' },
-    // Add more currencies if needed
+    { value: 'USD', label: 'USD - US Dollar', countryCode: 'US' },
+    { value: 'EUR', label: 'EUR - Euro', countryCode: 'EU' },
+    { value: 'GBP', label: 'GBP - British Pound', countryCode: 'GB' },
+    { value: 'JPY', label: 'JPY - Japanese Yen', countryCode: 'JP' },
+    { value: 'CAD', label: 'CAD - Canadian Dollar', countryCode: 'CA' },
+    { value: 'AUD', label: 'AUD - Australian Dollar', countryCode: 'AU' },
+    { value: 'INR', label: 'INR - Indian Rupee', countryCode: 'IN' },
   ];
 
   export const distanceUnits: Unit[] = [
@@ -64,6 +74,8 @@ export interface Unit {
     { value: 'pt_us', label: 'US Pint (pt)' },
     { value: 'cup_us', label: 'US Cup' },
     { value: 'floz_us', label: 'US Fluid Ounce (fl oz)' },
+    { value: 'tbsp_us', label: 'US Tablespoon (tbsp)' },
+    { value: 'tsp_us', label: 'US Teaspoon (tsp)' },
     { value: 'gal_uk', label: 'UK Gallon (gal)' },
     { value: 'floz_uk', label: 'UK Fluid Ounce (fl oz)' },
   ];

@@ -35,13 +35,19 @@ const convertTemperature = (value: number, fromUnit: string, toUnit: string): nu
   }
 };
 
+const quickExamples = [
+  { fromUnit: 'C', toUnit: 'F', value: 100, label: '100°C → °F' },
+  { fromUnit: 'F', toUnit: 'C', value: 32, label: '32°F → °C' },
+  { fromUnit: 'C', toUnit: 'K', value: 0, label: '0°C → K' },
+];
+
 export function TemperatureConverter() {
   return (
     <ConverterLayout
       units={temperatureUnits}
-      // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertTemperature}
-      converterType="temperature" // Pass the type for preference lookup
+      converterType="temperature"
+      quickExamples={quickExamples}
     />
   );
 }

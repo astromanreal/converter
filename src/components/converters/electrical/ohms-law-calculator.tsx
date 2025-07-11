@@ -8,11 +8,13 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Bolt, Waves } from 'lucide-react';
+
+const OmegaIcon = () => <span className="font-bold text-lg leading-none">Ω</span>;
 
 type UnknownVariable = 'voltage' | 'current' | 'resistance';
 type Unit = { label: string; factor: number };
 
-// Basic unit definitions (could be expanded)
 const voltageUnits: Record<string, Unit> = { V: { label: 'Volts (V)', factor: 1 }, mV: { label: 'Millivolts (mV)', factor: 1e-3 }, kV: { label: 'Kilovolts (kV)', factor: 1e3 } };
 const currentUnits: Record<string, Unit> = { A: { label: 'Amps (A)', factor: 1 }, mA: { label: 'Milliamps (mA)', factor: 1e-3 }, kA: { label: 'Kiloamps (kA)', factor: 1e3 } };
 const resistanceUnits: Record<string, Unit> = { Ohm: { label: 'Ohms (Ω)', factor: 1 }, kOhm: { label: 'Kiloohms (kΩ)', factor: 1e3 }, MOhm: { label: 'Megaohms (MΩ)', factor: 1e6 } };
@@ -44,8 +46,8 @@ export function OhmsLawCalculator() {
         case 'voltage':
           if (isNaN(i) || isNaN(r)) throw new Error("Please enter valid Current and Resistance values.");
           calculatedValue = i * r;
-          resultUnitLabel = voltageUnits[voltageUnit]?.label || 'Volts'; // Result in selected unit scale
-          calculatedValue /= (voltageUnits[voltageUnit]?.factor ?? 1); // Adjust to selected unit
+          resultUnitLabel = voltageUnits[voltageUnit]?.label || 'Volts';
+          calculatedValue /= (voltageUnits[voltageUnit]?.factor ?? 1);
           break;
         case 'current':
           if (isNaN(v) || isNaN(r)) throw new Error("Please enter valid Voltage and Resistance values.");
@@ -65,40 +67,46 @@ export function OhmsLawCalculator() {
           throw new Error("Invalid calculation type.");
       }
 
-      if (calculatedValue === null || isNaN(calculatedValue)) {
-          throw new Error("Calculation resulted in an invalid number.");
+      if (calculatedValue === null || !isFinite(calculatedValue)) {
+          throw new Error("Calculation resulted in an invalid or infinite number.");
       }
-
-      // Format result nicely
-       const resultString = Number(calculatedValue.toFixed(6)).toString().replace(/\.?0+$/, ''); // Limit precision and remove trailing zeros
+      
+      const resultString = Number(calculatedValue.toPrecision(6)).toString();
       setResult(`${resultString} ${resultUnitLabel}`);
 
     } catch (err: any) {
       setError(err.message || "Calculation error.");
     }
   };
+  
+   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+          calculate();
+      }
+  };
 
-
-   // Helper to render input fields conditionally
-   const renderInput = (variable: UnknownVariable, value: string, setValue: (val: string) => void, unit: string, setUnit: (val: string) => void, units: Record<string, Unit>) => {
-     if (unknownVariable === variable) return null; // Don't show input for the variable being calculated
+   const renderInput = (variable: UnknownVariable, value: string, setValue: (val: string) => void, unit: string, setUnit: (val: string) => void, units: Record<string, Unit>, Icon: React.ElementType) => {
+     if (unknownVariable === variable) return null;
 
      return (
         <div className="space-y-2">
-         <Label htmlFor={variable} className="text-sm font-medium capitalize">{variable} ({units[unit]?.label || ''})</Label>
+         <Label htmlFor={variable} className="text-sm font-medium capitalize flex items-center gap-2">
+            <Icon className="h-4 w-4 text-muted-foreground" />
+            {variable}
+         </Label>
           <div className="flex gap-2">
              <Input
                id={variable}
-               type="number"
+               type="text"
                inputMode="decimal"
                value={value}
                onChange={(e) => setValue(e.target.value)}
+               onKeyPress={handleKeyPress}
                placeholder={`Enter ${variable}`}
                className="flex-grow"
-               step="any"
              />
-              <Select value={unit} onValueChange={setUnit} >
-                 <SelectTrigger className="w-[150px] shrink-0">
+              <Select value={unit} onValueChange={setUnit}>
+                 <SelectTrigger className="w-[160px] shrink-0">
                      <SelectValue placeholder="Unit" />
                  </SelectTrigger>
                  <SelectContent>
@@ -117,10 +125,14 @@ export function OhmsLawCalculator() {
   return (
     <div className="space-y-6">
       <div>
-        <Label className="text-sm font-medium mb-2 block">Calculate for:</Label>
+        <Label className="text-sm font-medium mb-2 block">Choose value to calculate:</Label>
         <RadioGroup
           value={unknownVariable}
-          onValueChange={(value) => setUnknownVariable(value as UnknownVariable)}
+          onValueChange={(value) => {
+              setUnknownVariable(value as UnknownVariable);
+              setResult(null);
+              setError(null);
+          }}
           className="flex flex-wrap gap-4"
         >
           <div className="flex items-center space-x-2">
@@ -138,13 +150,12 @@ export function OhmsLawCalculator() {
         </RadioGroup>
       </div>
 
-      {/* Render input fields */}
-      {renderInput('voltage', voltage, setVoltage, voltageUnit, setVoltageUnit, voltageUnits)}
-      {renderInput('current', current, setCurrent, currentUnit, setCurrentUnit, currentUnits)}
-       {renderInput('resistance', resistance, setResistance, resistanceUnit, setResistanceUnit, resistanceUnits)}
+      {renderInput('voltage', voltage, setVoltage, voltageUnit, setVoltageUnit, voltageUnits, Bolt)}
+      {renderInput('current', current, setCurrent, currentUnit, setCurrentUnit, currentUnits, Waves)}
+      {renderInput('resistance', resistance, setResistance, resistanceUnit, setResistanceUnit, resistanceUnits, OmegaIcon)}
 
 
-      <Button onClick={calculate}>Calculate</Button>
+      <Button onClick={calculate} className="w-full">Calculate {unknownVariable}</Button>
 
       {error && (
         <Alert variant="destructive">
@@ -154,17 +165,14 @@ export function OhmsLawCalculator() {
       )}
 
       {result !== null && (
-        <Alert>
+        <Alert variant="default" className="border-primary/50">
           <AlertTitle>Result</AlertTitle>
-          <AlertDescription>
-            The calculated {unknownVariable} is approximately{' '}
-            <span className="font-semibold">{result}</span>.
+          <AlertDescription className="text-base">
+            Calculated {unknownVariable} is{' '}
+            <span className="font-semibold text-primary text-lg">{result}</span>.
           </AlertDescription>
         </Alert>
       )}
-       <div className="text-xs text-muted-foreground pt-2">
-          Based on Ohm's Law: Voltage (V) = Current (I) × Resistance (R)
-       </div>
     </div>
   );
 }

@@ -20,6 +20,12 @@ const convertSpeed = (value: number, fromUnit: string, toUnit: string): number =
   return valueInMetersPerSecond * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'km/h', toUnit: 'mph', value: 100, label: '100 km/h → mph' },
+  { fromUnit: 'mph', toUnit: 'km/h', value: 60, label: '60 mph → km/h' },
+  { fromUnit: 'm/s', toUnit: 'km/h', value: 1, label: '1 m/s → km/h' },
+];
+
 export function SpeedConverter() {
   return (
     <ConverterLayout
@@ -27,6 +33,7 @@ export function SpeedConverter() {
       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertSpeed}
       converterType="speed" // Pass the type for preference lookup
+      quickExamples={quickExamples}
     />
   );
 }

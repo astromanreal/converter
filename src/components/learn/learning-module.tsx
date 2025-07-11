@@ -71,21 +71,6 @@ export function LearningModuleCard({ module }: LearningModuleCardProps) {
             </AccordionItem>
           )}
 
-           {/* Visual Aid Placeholder */}
-          {module.visual && (
-             <AccordionItem value="visual">
-                <AccordionTrigger className="text-base font-medium">Visual Aid</AccordionTrigger>
-                 <AccordionContent>
-                    {/* Placeholder for image/chart */}
-                    <div className="text-center p-4 border border-dashed rounded text-muted-foreground">
-                        [Visual: {module.visual}]
-                        {/* In a real app, you'd render an Image component here */}
-                        {/* e.g., <Image src={`/images/learn/${module.visual}`} alt={module.title} width={...} height={...} /> */}
-                    </div>
-                </AccordionContent>
-            </AccordionItem>
-          )}
-
         </Accordion>
       </CardContent>
       {/* Footer for actions like 'Mark as Learned' (optional) */}

@@ -134,5 +134,95 @@
     "answer": "10 L/100km",
     "difficulty": "Medium",
     "explanation": "L/100km = 100 / (km/L). So, 100 / 10 = 10 L/100km."
+  },
+  {
+    "id": "q16",
+    "category": "Weight",
+    "question": "How many ounces are in one pound?",
+    "options": ["8", "12", "16", "32"],
+    "answer": "16",
+    "difficulty": "Easy",
+    "explanation": "The standard avoirdupois pound contains exactly 16 ounces."
+  },
+  {
+    "id": "q17",
+    "category": "Volume",
+    "question": "Which volume is larger: one US quart or one liter?",
+    "options": ["US quart", "Liter", "They are equal"],
+    "answer": "Liter",
+    "difficulty": "Medium",
+    "explanation": "1 liter is approximately 1.057 US quarts, making it slightly larger."
+  },
+  {
+    "id": "q18",
+    "category": "Energy",
+    "question": "What does 'BTU' stand for in energy measurement?",
+    "options": ["Basic Thermal Unit", "British Thermal Unit", "Boiling Temperature Unit", "Base Temperature Unit"],
+    "answer": "British Thermal Unit",
+    "difficulty": "Medium",
+    "explanation": "BTU stands for British Thermal Unit, a measure of heat energy."
+  },
+  {
+    "id": "q19",
+    "category": "Power",
+    "question": "What is the standard SI unit of power?",
+    "options": ["Horsepower", "Joule", "Watt", "Volt"],
+    "answer": "Watt",
+    "difficulty": "Easy",
+    "explanation": "The Watt (W), equivalent to one joule per second, is the SI unit of power."
+  },
+  {
+    "id": "q20",
+    "category": "Pressure",
+    "question": "A barometer reading of 760 mmHg is equivalent to what standard pressure unit?",
+    "options": ["1 Pascal", "1 bar", "1 psi", "1 atmosphere"],
+    "answer": "1 atmosphere",
+    "difficulty": "Medium",
+    "explanation": "Standard atmospheric pressure at sea level is defined as 760 mmHg (or torr), which is equal to 1 atm."
+  },
+  {
+    "id": "q21",
+    "category": "Data Storage",
+    "question": "You have a 1 Terabyte (TB) hard drive. How many Gigabytes (GB) is this?",
+    "options": ["1000", "1024", "100", "2048"],
+    "answer": "1000",
+    "difficulty": "Easy",
+    "explanation": "In the decimal system used for marketing storage, 'Tera' means 10^12 and 'Giga' means 10^9. So 1 TB = 1000 GB."
+  },
+  {
+    "id": "q22",
+    "category": "Chemistry",
+    "question": "A solution with a pH of 3 is how many times more acidic than a solution with a pH of 5?",
+    "options": ["2 times", "10 times", "20 times", "100 times"],
+    "answer": "100 times",
+    "difficulty": "Hard",
+    "explanation": "The pH scale is logarithmic. A difference of 1 pH unit is a 10-fold difference in acidity. A difference of 2 units (5 - 3) is a 10 * 10 = 100-fold difference."
+  },
+  {
+    "id": "q23",
+    "category": "Speed",
+    "question": "The speed of light is approximately 300,000 km/s. What is this in m/s?",
+    "options": ["3,000,000 m/s", "30,000,000 m/s", "300,000,000 m/s", "30,000 m/s"],
+    "answer": "300,000,000 m/s",
+    "difficulty": "Medium",
+    "explanation": "Since 1 km = 1000 m, you multiply by 1000. 300,000 * 1000 = 300,000,000 m/s."
+  },
+  {
+    "id": "q24",
+    "category": "Time",
+    "question": "How many days are in a leap year?",
+    "options": ["364", "365", "366", "360"],
+    "answer": "366",
+    "difficulty": "Easy",
+    "explanation": "A leap year has 366 days, with an extra day (February 29th) added to keep the calendar year synchronized with the astronomical year."
+  },
+  {
+    "id": "q25",
+    "category": "Electrical",
+    "question": "If a circuit has a current of 500mA and a resistance of 100Ω, what is the voltage?",
+    "options": ["5V", "50V", "500V", "0.5V"],
+    "answer": "50V",
+    "difficulty": "Hard",
+    "explanation": "First, convert 500mA to Amps (500 / 1000 = 0.5A). Then use V = I * R. V = 0.5A * 100Ω = 50V."
   }
 ]

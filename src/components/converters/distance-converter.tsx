@@ -2,7 +2,7 @@
 'use client';
 
 import { ConverterLayout } from './shared/converter-layout';
-import { distanceUnits } from '@/lib/units'; // Import shared units
+import { distanceUnits } from '@/lib/units';
 
 // Conversion factors relative to 1 meter
 const factors: { [key: string]: number } = {
@@ -23,13 +23,20 @@ const convertDistance = (value: number, fromUnit: string, toUnit: string): numbe
   return valueInMeters * factors[toUnit];
 };
 
+const quickExamples = [
+  { fromUnit: 'km', toUnit: 'mi', value: 1, label: '1 km → mi' },
+  { fromUnit: 'm', toUnit: 'ft', value: 1, label: '1 m → ft' },
+  { fromUnit: 'in', toUnit: 'cm', value: 1, label: '1 in → cm' },
+  { fromUnit: 'mi', toUnit: 'km', value: 1, label: '1 mi → km' },
+];
+
 export function DistanceConverter() {
   return (
     <ConverterLayout
       units={distanceUnits}
-       // Default units will be handled by preferences or fallback in ConverterLayout
       conversionFn={convertDistance}
-      converterType="distance" // Pass the type for preference lookup
+      converterType="distance"
+      quickExamples={quickExamples}
     />
   );
 }
